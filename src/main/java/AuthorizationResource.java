@@ -161,7 +161,7 @@ public class AuthorizationResource {
 
     @DELETE
     @Path("/delete")
-    public Response deleteUser(@QueryParam("username") String pathUsername, @HeaderParam("Auth") String idToken) {
+    public Response deleteUser(@QueryParam("username") String Username, @HeaderParam("Auth") String idToken) {
         // Extract ID  token from the headers
         String userId;
         DecodedJWT decodedJWT = JWT.decode(idToken);
@@ -175,7 +175,7 @@ public class AuthorizationResource {
         String username = decodedJWT.getClaim("cognito:username").asString();
 
         // Check if the username from the token matches the username from the path parameters
-        if (!username.equals(pathUsername)) {
+        if (!username.equals(Username)) {
             return Response.status(Response.Status.FORBIDDEN).entity("Not authorized to delete this user.").build();
         }
 
