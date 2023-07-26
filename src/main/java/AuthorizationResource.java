@@ -159,14 +159,8 @@ public class AuthorizationResource {
         }
     }
 
-
-
-
-
-
-
     @DELETE
-    @Path("/{username}")
+    @Path("/delete")
     public Response deleteUser(@QueryParam("username") String pathUsername, @HeaderParam("Auth") String idToken) {
         // Extract ID  token from the headers
         String userId;
