@@ -168,7 +168,7 @@ public class AuthorizationResource {
     @DELETE
     @Path("/{username}")
     public Response deleteUser(@QueryParam("username") String pathUsername, @HeaderParam("Auth") String idToken) {
-        // Extract ID token from the headers
+        // Extract ID  token from the headers
         String userId;
         DecodedJWT decodedJWT = JWT.decode(idToken);
 
