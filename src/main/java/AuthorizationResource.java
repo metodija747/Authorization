@@ -12,8 +12,6 @@ import org.eclipse.microprofile.opentracing.Traced;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.*;
-
-import javax.annotation.security.PermitAll;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -70,6 +68,7 @@ public class AuthorizationResource {
             }
         }
     }
+
     @POST
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)

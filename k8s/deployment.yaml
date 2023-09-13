@@ -2,6 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: authorization-microservice
+  annotations: # <--  Add Prometheus annotations here
+    prometheus.io/scrape: 'true'
+    prometheus.io/path: '/authorization/metrics'
+    prometheus.io/port: '8080'
 spec:
   replicas: 1
   selector:
