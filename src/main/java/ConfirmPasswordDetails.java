@@ -1,14 +1,14 @@
 public class ConfirmPasswordDetails {
-    private String username;
+    private String email;
     private String confirmationCode;
     private String newPassword;
 
     public String getUsername() {
-        return username;
+        return email;
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.email = username;
     }
 
     public String getConfirmationCode() {
