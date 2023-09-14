@@ -3,12 +3,12 @@ public class ConfirmPasswordDetails {
     private String confirmationCode;
     private String newPassword;
 
-    public String getUsername() {
+    public String getEmail() {  // Renamed the getter to getEmail
         return email;
     }
 
-    public void setUsername(String username) {
-        this.email = username;
+    public void setEmail(String email) {  // Renamed the setter to setEmail
+        this.email = email;
     }
 
     public String getConfirmationCode() {

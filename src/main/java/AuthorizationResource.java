@@ -86,7 +86,7 @@ public class AuthorizationResource {
 
     @POST
     @Operation(summary = "Register a new user",
-            description = "This operation registers a new user in the system.")
+            description = "This operation registers a new user in cognito.")
     @APIResponses({
             @APIResponse(responseCode = "200", description = "User registered successfully"),
             @APIResponse(responseCode = "403", description = "Forbidden. User already exists."),
@@ -289,6 +289,19 @@ public class AuthorizationResource {
                 .build();
     }
 
+    private boolean userExists(String username) {
+        try {
+            AdminGetUserRequest getUserRequest = AdminGetUserRequest.builder()
+                    .userPoolId(currentUserPoolId)
+                    .username(username)
+                    .build();
+            cognitoClient.adminGetUser(getUserRequest);
+            return true;
+        } catch (UserNotFoundException e) {
+            return false;
+        }
+    }
+
     @POST
     @Operation(summary = "Request a password reset",
             description = "This operation sends a password reset request to the email associated with the account.")
@@ -334,6 +347,13 @@ public class AuthorizationResource {
                 .username(Username)
                 .build();
         try {
+            if (!userExists(Username)) {
+                span.setTag("error", true);
+                Logger.getLogger(AuthorizationResource.class.getName()).log(Level.SEVERE, "User with given email address does not exist.");
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("User with given email address does not exist.")
+                        .build();
+            }
             cognitoClient.forgotPassword(forgotPasswordRequest);
             LOGGER.info("Confirmation code sent successfully");
             span.setTag("completed", true);
@@ -341,12 +361,6 @@ public class AuthorizationResource {
                     .entity("Confirmation code sent to your email!")
                     .build();
 
-        } catch (UserNotFoundException e) {
-            Logger.getLogger(AuthorizationResource.class.getName()).log(Level.SEVERE, "User with given email address does not exist.", e);
-            span.setTag("error", true);
-            return Response.status(Response.Status.NOT_FOUND)
-                    .entity("User with given email address does not exist.")
-                    .build();
 
         } catch (CognitoIdentityProviderException e) {
             Logger.getLogger(AuthorizationResource.class.getName()).log(Level.SEVERE, "Error while processing forgot password for user " + Username, e);
@@ -393,7 +407,7 @@ public class AuthorizationResource {
     public Response confirmForgotPassword(ConfirmPasswordDetails passwordDetails) {
         checkAndUpdateCognitoClient();
 
-        String username = passwordDetails.getUsername();
+        String username = passwordDetails.getEmail();
         String confirmationCode = passwordDetails.getConfirmationCode();
         String newPassword = passwordDetails.getNewPassword();
 
@@ -426,7 +440,7 @@ public class AuthorizationResource {
         }
     }
     public Response confirmForgotPasswordFallback(ConfirmPasswordDetails passwordDetails) {
-        Logger.getLogger(AuthorizationResource.class.getName()).info("Fallback activated: Unable to change password at the moment for user: " + passwordDetails.getUsername());
+        Logger.getLogger(AuthorizationResource.class.getName()).info("Fallback activated: Unable to change password at the moment for user: " + passwordDetails.getEmail());
         Map<String, String> response = new HashMap<>();
         response.put("description", "Unable to change password at the moment. Please try again later.");
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -465,9 +479,11 @@ public class AuthorizationResource {
                     .entity("Invalid token.")
                     .build();
         }
-        if (jwt.getClaim("email") != Username){
+        if (!jwt.getClaim("email").equals(Username)) {
             LOGGER.log(Level.SEVERE, "Emails don't match");
-            return Response.ok("Unauthorized: you are not allowed to delete this email!").build();
+            return Response.status(Response.Status.UNAUTHORIZED)
+                    .entity("Unauthorized: you are not allowed to delete this email!")
+                    .build();
         }
         Span span = tracer.buildSpan("deleteUser").start();
         span.setTag("username", Username);
@@ -490,7 +506,9 @@ public class AuthorizationResource {
             Logger.getLogger(AuthorizationResource.class.getName()).log(Level.SEVERE, "Error while deleting user " + Username, e);
             span.setTag("error", true);
             if (e.statusCode() == 400 && e.awsErrorDetails().errorMessage().contains("User does not exist.")) {
-                return Response.status(Response.Status.OK).entity("Failed to delete user because it does not exist.").build();
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity("Failed to delete user because it does not exist.")
+                        .build();
             }
             throw new WebApplicationException("Failed to delete user. Please try again later.", e, Response.Status.INTERNAL_SERVER_ERROR);
         } finally {
