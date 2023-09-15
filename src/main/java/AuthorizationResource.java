@@ -92,8 +92,16 @@ public class AuthorizationResource {
             @APIResponse(responseCode = "403", description = "Forbidden. User already exists."),
             @APIResponse(responseCode = "500", description = "Internal Server Error")
     })
-    @RequestBody(description = "User details required for registration", required = true,
-            content = @Content(schema = @Schema(implementation = UserDetails.class)))
+    @RequestBody(
+            description = "User details required for registration",
+            required = true,
+            content = @Content(
+                    schema = @Schema(
+                            implementation = UserDetails.class,
+                            example = "{ \"email\": \"john.doe@example.com\", \"password\": \"your-password\" }"
+                    )
+            )
+    )
     @Path("/register")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -197,8 +205,16 @@ public class AuthorizationResource {
             @APIResponse(responseCode = "403", description = "Forbidden. Invalid credentials."),
             @APIResponse(responseCode = "500", description = "Internal Server Error")
     })
-    @RequestBody(description = "User credentials required for login", required = true,
-            content = @Content(schema = @Schema(implementation = UserDetails.class)))
+    @RequestBody(
+            description = "User credentials required for login",
+            required = true,
+            content = @Content(
+                    schema = @Schema(
+                            implementation = UserDetails.class,
+                            example = "{ \"email\": \"john.doe@example.com\", \"password\": \"your-password\" }"
+                    )
+            )
+    )
     @Path("/login")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -311,7 +327,13 @@ public class AuthorizationResource {
             @APIResponse(responseCode = "500", description = "Internal Server Error")
     })
     @Parameters({
-            @Parameter(name = "email", in = ParameterIn.QUERY, description = "The email address associated with the account", required = true)
+            @Parameter(
+                    name = "email",
+                    in = ParameterIn.QUERY,
+                    description = "The email address associated with the account",
+                    required = true,
+                    example = "example@email.com"
+            )
     })
     @Path("/forgot-password")
     @Produces(MediaType.APPLICATION_JSON)
@@ -389,8 +411,16 @@ public class AuthorizationResource {
             @APIResponse(responseCode = "200", description = "Password changed successfully"),
             @APIResponse(responseCode = "500", description = "Internal Server Error")
     })
-    @RequestBody(description = "Details required for confirming the password reset", required = true,
-            content = @Content(schema = @Schema(implementation = ConfirmPasswordDetails.class)))
+    @RequestBody(
+            description = "Details required for confirming the password reset",
+            required = true,
+            content = @Content(
+                    schema = @Schema(
+                            implementation = ConfirmPasswordDetails.class,
+                            example = "{ \"email\": \"example@email.com\", \"confirmationCode\": \"255562\", \"newPassword\": \"Masters12345%\" }"
+                    )
+            )
+    )
     @Path("/confirm-forgot-password")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
@@ -457,7 +487,13 @@ public class AuthorizationResource {
             @APIResponse(responseCode = "500", description = "Internal Server Error")
     })
     @Parameters({
-            @Parameter(name = "email", in = ParameterIn.QUERY, description = "Email address of the user to delete", required = true)
+            @Parameter(
+                    name = "email",
+                    in = ParameterIn.QUERY,
+                    description = "The email address associated with the account",
+                    required = true,
+                    example = "example@email.com"
+            )
     })
     @Path("/delete")
     @Counted(name = "deleteUserCount", description = "Count of deleteUser calls")
