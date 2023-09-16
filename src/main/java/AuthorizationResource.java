@@ -171,12 +171,18 @@ public class AuthorizationResource {
             Logger.getLogger(AuthorizationResource.class.getName()).info("User successfully registered");
             span.setTag("completed", true);
             return Response.status(Response.Status.OK)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent")
                     .entity(new Gson().toJson("User registered successfully"))
                     .build();
         } catch (UsernameExistsException e) {
             Logger.getLogger(AuthorizationResource.class.getName()).log(Level.SEVERE, "User already exists", e);
             span.setTag("completed", false);
             return Response.status(Response.Status.FORBIDDEN)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent")
                     .entity(new Gson().toJson("Forbidden. User already exists."))
                     .build();
         } catch (Exception e) {
@@ -193,6 +199,9 @@ public class AuthorizationResource {
         Map<String, String> response = new HashMap<>();
         response.put("description", "Unable to register user at the moment. Please try again later.");
         return Response.status(500)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                .header("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent")
                 .entity(new Gson().toJson(response))
                 .build();
     }
@@ -279,12 +288,19 @@ public class AuthorizationResource {
 
             span.setTag("completed", true);
             Logger.getLogger(AuthorizationResource.class.getName()).log(Level.INFO, "Successfully logged in");
-            return Response.ok(responseBody).build();
+            return Response.ok(responseBody)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent")
+                    .build();
 
         } catch (NotAuthorizedException e) {
             Logger.getLogger(AuthorizationResource.class.getName()).log(Level.SEVERE, "Forbidden. Invalid credentials.");
             span.setTag("error", true);
             return Response.status(Response.Status.FORBIDDEN)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent")
                     .entity(new Gson().toJson("Forbidden. Invalid credentials."))
                     .build();
         }catch (Exception e) {
@@ -301,6 +317,9 @@ public class AuthorizationResource {
         Map<String, String> response = new HashMap<>();
         response.put("description", "Unable to login at the moment. Please try again later.");
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                .header("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent")
                 .entity(new Gson().toJson(response))
                 .build();
     }
@@ -373,6 +392,9 @@ public class AuthorizationResource {
                 span.setTag("error", true);
                 Logger.getLogger(AuthorizationResource.class.getName()).log(Level.SEVERE, "User with given email address does not exist.");
                 return Response.status(Response.Status.NOT_FOUND)
+                        .header("Access-Control-Allow-Origin", "*")
+                        .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                        .header("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent")
                         .entity("User with given email address does not exist.")
                         .build();
             }
@@ -380,9 +402,11 @@ public class AuthorizationResource {
             LOGGER.info("Confirmation code sent successfully");
             span.setTag("completed", true);
             return Response.status(Response.Status.OK)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent")
                     .entity("Confirmation code sent to your email!")
                     .build();
-
 
         } catch (CognitoIdentityProviderException e) {
             Logger.getLogger(AuthorizationResource.class.getName()).log(Level.SEVERE, "Error while processing forgot password for user " + Username, e);
@@ -398,6 +422,9 @@ public class AuthorizationResource {
         Map<String, String> response = new HashMap<>();
         response.put("description","Unable to send confirmation code at the moment. Please try again later.");
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                .header("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent")
                 .entity(response)
                 .build();
     }
@@ -460,8 +487,11 @@ public class AuthorizationResource {
             Logger.getLogger(AuthorizationResource.class.getName()).log(Level.INFO, "Password changed successfully");
             cognitoClient.confirmForgotPassword(confirmForgotPasswordRequest);
             span.setTag("completed", true);
-            return Response.ok("Password changed successfully").build();
-        } catch (CognitoIdentityProviderException e) {
+            return Response.ok("Password changed successfully")
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent")
+                    .build();        } catch (CognitoIdentityProviderException e) {
             Logger.getLogger(AuthorizationResource.class.getName()).log(Level.SEVERE, "Error while confirming forgot password for user " + username, e);
             span.setTag("error", true);
             throw new WebApplicationException("Error while confirming forgot password. Please try again later.", e, Response.Status.INTERNAL_SERVER_ERROR);
@@ -474,6 +504,9 @@ public class AuthorizationResource {
         Map<String, String> response = new HashMap<>();
         response.put("description", "Unable to change password at the moment. Please try again later.");
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                .header("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent")
                 .entity(response)
                 .build();
     }
@@ -512,15 +545,23 @@ public class AuthorizationResource {
         if (jwt == null) {
             LOGGER.log(Level.SEVERE, "Token verification failed");
             return Response.status(Response.Status.UNAUTHORIZED)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent")
                     .entity("Invalid token.")
                     .build();
         }
+
         if (!jwt.getClaim("email").equals(Username)) {
             LOGGER.log(Level.SEVERE, "Emails don't match");
             return Response.status(Response.Status.UNAUTHORIZED)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent")
                     .entity("Unauthorized: you are not allowed to delete this email!")
                     .build();
         }
+
         Span span = tracer.buildSpan("deleteUser").start();
         span.setTag("username", Username);
         Map<String, Object> logMap = new HashMap<>();
@@ -537,12 +578,19 @@ public class AuthorizationResource {
             Logger.getLogger(AuthorizationResource.class.getName()).log(Level.INFO, "User deleted successfully ");
             cognitoClient.adminDeleteUser(deleteUserRequest);
             span.setTag("completed", true);
-            return Response.ok("User deleted successfully").build();
+            return Response.ok("User deleted successfully")
+                    .header("Access-Control-Allow-Origin", "*")
+                    .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                    .header("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent")
+                    .build();
         } catch (CognitoIdentityProviderException e) {
             Logger.getLogger(AuthorizationResource.class.getName()).log(Level.SEVERE, "Error while deleting user " + Username, e);
             span.setTag("error", true);
             if (e.statusCode() == 400 && e.awsErrorDetails().errorMessage().contains("User does not exist.")) {
                 return Response.status(Response.Status.NOT_FOUND)
+                        .header("Access-Control-Allow-Origin", "*")
+                        .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                        .header("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent")
                         .entity("Failed to delete user because it does not exist.")
                         .build();
             }
@@ -556,6 +604,9 @@ public class AuthorizationResource {
         Map<String, String> response = new HashMap<>();
         response.put("description", "Unable to delete user at the moment. Please try again later.");
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                .header("Access-Control-Allow-Origin", "*")
+                .header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+                .header("Access-Control-Allow-Headers", "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,X-Amz-User-Agent")
                 .entity(response)
                 .build();
     }
