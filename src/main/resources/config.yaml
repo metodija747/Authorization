@@ -80,7 +80,7 @@ kumuluzee:
       enabled: true
       mapping: /authorization/metrics
   jwt-auth:
-    jwks-uri: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_cl8iVMzUw/.well-known/jwks.json
+    jwks-uri: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_7pGhc7VeN/.well-known/jwks.json
     issuer: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_7pGhc7VeN
 #  opentracing:
 #    jaeger:
