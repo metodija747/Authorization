@@ -99,7 +99,7 @@ kumuluzee:
       traceid-128bit: true
 aws-config:
   dynamo-region: us-east-1
-  cognito-issuer: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_cl8iVMzUw
-  userpool-id: us-east-1_cl8iVMzUw
-  clientapp-id: 16fec44qrgoth26a20ob5ft0tb
+  cognito-issuer: https://cognito-idp.us-east-1.amazonaws.com/us-east-1_7pGhc7VeN
+  userpool-id: us-east-1_7pGhc7VeN
+  clientapp-id: 45n7fib8kur2pt2j3sjbkcc3jb
 
